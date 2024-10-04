@@ -4,10 +4,16 @@ const signup = async (req, res, next) => {
   try{
     const {name, email, password, role} = req.body;
 
+    const idEmailExist = await User.findOne({email});
+    if(isEmailExist){
+      res.code = 400;
+      throw new Error("Email alredy exist")
+    }
+
     const newUser = new User({name, email, password, role})
 
     await newUser.save();
-    res.status(201).json({message: "User registered succesfully"});
+    res.status(201).json({code: 201, status: true, message: "User registered succesfully"});
 
   }catch(error){
     next(error)
